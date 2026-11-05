@@ -51,6 +51,7 @@ jobs:
         run: |
           $repo = "${{ github.repository }}"
           $tag = "${{ github.ref_name }}"
-          $id = gh api "repos/$repo/releases/tags/$tag" --jq '.assets[] | select(.name=="PaletMonApp-win-Setup.exe") | .id'
+          $release = gh api "repos/$repo/releases/tags/$tag" | ConvertFrom-Json
+          $id = ($release.assets | Where-Object name -eq "PaletMonApp-win-Setup.exe").id
           gh api -X PATCH "repos/$repo/releases/assets/$id" -f name=Palet-Mon-Instalador.exe
           gh release edit $tag --notes-file .github/release-notes.md
