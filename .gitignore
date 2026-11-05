@@ -1,0 +1,10 @@
+bin/
+obj/
+dist/
+Releases/
+*.user
+*.pfx
+
+# arquivos da fase web
+/*.html
+/PaletMon.exe

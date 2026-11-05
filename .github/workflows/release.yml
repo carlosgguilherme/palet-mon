@@ -1,0 +1,46 @@
+# Gera o instalador e a atualização e publica a release quando uma tag vX.Y.Z é enviada.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+env:
+  REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Ler versão da tag
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Restaurar ferramentas
+        run: dotnet tool restore
+
+      - name: Compilar
+        run: dotnet publish PaletMon/PaletMon.csproj -c Release -r win-x64 --self-contained true -p:Version=${{ env.VERSION }} -p:DebugType=none -o dist/publish
+
+      # traz a versão anterior para gerar a atualização incremental; na primeira release não há nada para baixar
+      - name: Baixar versão anterior
+        continue-on-error: true
+        run: dotnet vpk download github --repoUrl ${{ env.REPO_URL }} --token ${{ env.GH_TOKEN }} -o Releases
+
+      - name: Empacotar
+        run: dotnet vpk pack -u PaletMonApp -v ${{ env.VERSION }} -p dist/publish -e PaletMon.exe --packTitle "Palet Mon" --packAuthors "Palet Mon" --icon PaletMon/Assets/PaletMon.ico -o Releases
+
+      - name: Publicar release
+        run: dotnet vpk upload github --repoUrl ${{ env.REPO_URL }} --token ${{ env.GH_TOKEN }} -o Releases --publish --releaseName "Palet Mon ${{ env.VERSION }}" --tag ${{ github.ref_name }}
