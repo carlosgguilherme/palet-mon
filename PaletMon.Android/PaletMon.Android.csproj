@@ -3,7 +3,7 @@
   <!-- Android app: same screens and logic as the core project, updates from GitHub releases. -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-android</TargetFramework>
+    <TargetFramework>net10.0-android</TargetFramework>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <AssemblyName>PaletMonPhone</AssemblyName>
     <RootNamespace>PaletMon.Phone</RootNamespace>

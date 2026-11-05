@@ -22,7 +22,7 @@ runs:
   steps:
     - uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
 
     - uses: actions/setup-java@v4
       with:
@@ -40,6 +40,7 @@ runs:
         PM_PASS: ${{ inputs.keystore-password }}
         VERSION: ${{ inputs.version }}
       run: |
+        VERSION="${VERSION#v}"
         IFS=. read -r major minor patch <<< "$VERSION"
         code=$((major * 10000 + minor * 100 + patch))
         signing=()
@@ -49,7 +50,7 @@ runs:
           signing=(-p:AndroidKeyStore=true -p:AndroidSigningKeyStore="$RUNNER_TEMP/paletmon.jks" -p:AndroidSigningKeyAlias=paletmon
             -p:AndroidSigningKeyPass=env:PM_PASS -p:AndroidSigningStorePass=env:PM_PASS)
         fi
-        dotnet publish PaletMon.Android/PaletMon.Android.csproj -c Release -f net8.0-android \
+        dotnet publish PaletMon.Android/PaletMon.Android.csproj -c Release -f net10.0-android \
           -p:Version="$VERSION" -p:ApplicationVersion="$code" -p:AndroidSdkDirectory="$ANDROID_HOME" "${signing[@]}"
 
     - name: Localizar APK

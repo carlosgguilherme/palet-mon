@@ -55,3 +55,28 @@ jobs:
           $id = ($release.assets | Where-Object name -eq "PaletMonApp-win-Setup.exe").id
           gh api -X PATCH "repos/$repo/releases/assets/$id" -f name=Palet-Mon-Instalador.exe
           gh release edit $tag --notes-file .github/release-notes.md
+
+  android:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # uma assinatura diferente impediria quem já tem o app de atualizar
+      - name: Conferir chave de assinatura
+        env:
+          KEY: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "Faltam os segredos ANDROID_KEYSTORE_B64 e ANDROID_KEYSTORE_PASSWORD."
+            exit 1
+          fi
+
+      - uses: ./.github/actions/build-apk
+        with:
+          version: ${{ github.ref_name }}
+          keystore-b64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Anexar APK à release
+        run: gh release upload "${{ github.ref_name }}" Palet-Mon-Android.apk --clobber

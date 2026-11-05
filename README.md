@@ -2,21 +2,29 @@
 
 Seu time, bem empilhado. Um estrategista de time para o **Cobbleverse**, o modpack de Pokémon para Minecraft.
 
-![Tela do Palet Mon](docs/tela.png)
+<img src="docs/celular.png" width="260" align="right" alt="Palet Mon no celular">
+
+![Palet Mon no Windows](docs/tela.png)
 
 ## Baixar
 
-**[Baixar o instalador para Windows](https://github.com/carlosgguilherme/palet-mon/releases/latest/download/Palet-Mon-Instalador.exe)**
+**[Windows: baixar o instalador](https://github.com/carlosgguilherme/palet-mon/releases/latest/download/Palet-Mon-Instalador.exe)**
 
 Abra o arquivo e pronto. Não precisa de permissão de administrador: o app abre sozinho e cria atalhos na Área de Trabalho e no Menu Iniciar.
 
-O código-fonte de cada versão fica separado na página de [releases](https://github.com/carlosgguilherme/palet-mon/releases), em **Source code**.
-
 O Windows pode mostrar o aviso "O Windows protegeu o computador" porque o instalador ainda não tem certificado digital. Clique em **Mais informações** e depois em **Executar assim mesmo**.
+
+**[Android: baixar o APK](https://github.com/carlosgguilherme/palet-mon/releases/latest/download/Palet-Mon-Android.apk)**
+
+Abra o arquivo no celular. Na primeira vez, o Android pede para permitir a instalação vinda do navegador ou do gerenciador de arquivos.
+
+O código-fonte de cada versão fica separado na página de [releases](https://github.com/carlosgguilherme/palet-mon/releases), em **Source code**.
 
 ## Atualizações
 
-O app procura novidades ao abrir e avisa no topo da janela. Para procurar na hora, abra a aba **Sobre** e clique em **Verificar atualizações**. Ele baixa, instala e reinicia sozinho, e seu time continua salvo.
+Sempre que abre, o app procura uma versão nova no GitHub e pergunta se você quer atualizar. Isso precisa de internet. Para procurar na hora, abra a aba **Sobre** e toque em **Verificar atualizações**. Seu time continua salvo.
+
+As imagens dos Pokémon vêm da PokéAPI: são baixadas na primeira vez e ficam guardadas no aparelho. Sem internet, o app funciona normalmente e mostra as iniciais.
 
 ## O que ele faz
 
@@ -35,21 +43,28 @@ dotnet tool restore
 dotnet run --project PaletMon
 ```
 
-- `PaletMon/Logic`: tipos, golpes, gerador, modos de combate e atualizador.
-- `PaletMon/UI`: telas, feitas com Avalonia.
-- `PaletMon/Assets/dex.json`: dados da PokéAPI.
-- `PaletMon.Snap`: tira fotos das telas sem abrir janela.
+- `PaletMon.Core`: dados, lógica e telas, usados pelos dois apps.
+  - `Logic`: tipos, golpes, gerador, modos de combate e fluxo de atualização.
+  - `UI`: `MainView` é a tela de PC e `MobileView` é a de celular.
+  - `Assets/dex.json`: dados da PokéAPI.
+- `PaletMon`: app de PC, com instalador e atualização pelo Velopack.
+- `PaletMon.Android`: app de Android, compilado pelo GitHub Actions.
+- `PaletMon.Snap`: tira fotos das telas sem abrir janela. Use `--phone` para as telas de celular.
 
 ### Lançar uma versão nova
 
-Crie uma tag. O GitHub Actions gera o instalador, a atualização e a release:
+Crie uma tag. O GitHub Actions gera o instalador, o APK, a atualização e a release:
 
 ```powershell
 git tag v2.2.0
 git push origin v2.2.0
 ```
 
-Quem já tem o app instalado recebe a versão nova sozinho. Para gerar o instalador no seu PC, sem publicar, rode `.\publicar.ps1 -Versao 2.2.0`.
+Quem já tem o app recebe o aviso da versão nova. Para gerar o instalador no seu PC, sem publicar, rode `.\publicar.ps1 -Versao 2.2.0`.
+
+### Chave do Android
+
+O APK precisa ser sempre assinado com a mesma chave, senão quem já tem o app não consegue atualizar. Ela fica nos segredos do repositório (`ANDROID_KEYSTORE_B64` e `ANDROID_KEYSTORE_PASSWORD`) e na pasta `chaves/`, que não vai para o Git. Guarde uma cópia em lugar seguro.
 
 ### Assinatura digital
 
