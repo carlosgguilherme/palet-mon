@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="ink">#1F1C19</color>
+  <color name="amarelo">#F2B300</color>
+  <style name="PaletMon.Theme" parent="@style/Theme.AppCompat.NoActionBar">
+    <item name="android:windowBackground">@drawable/splash</item>
+    <item name="android:statusBarColor">@color/ink</item>
+    <item name="android:navigationBarColor">@color/ink</item>
+    <item name="colorAccent">@color/amarelo</item>
+  </style>
+</resources>

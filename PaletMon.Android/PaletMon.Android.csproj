@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Android app: same screens and logic as the core project, updates from GitHub releases. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <AssemblyName>PaletMonPhone</AssemblyName>
+    <RootNamespace>PaletMon.Phone</RootNamespace>
+    <ApplicationId>io.github.carlosgguilherme.paletmon</ApplicationId>
+    <ApplicationVersion>20200</ApplicationVersion>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PaletMon.Core\PaletMon.Core.csproj" />
+    <PackageReference Include="Avalonia.Android" Version="11.1.3" />
+  </ItemGroup>
+
+</Project>

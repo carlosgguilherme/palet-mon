@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaletMon\PaletMon.csproj" />
+    <ProjectReference Include="..\PaletMon.Core\PaletMon.Core.csproj" />
     <PackageReference Include="Avalonia.Headless" Version="11.1.3" />
     <PackageReference Include="Avalonia.Skia" Version="11.1.3" />
   </ItemGroup>

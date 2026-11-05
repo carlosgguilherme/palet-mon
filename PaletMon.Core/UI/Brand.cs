@@ -34,9 +34,9 @@ public static class Brand
         return new Viewbox { Width = width, Child = canvas };
     }
 
-    public static Control Wordmark(double size)
+    public static Control Wordmark(double size, string color = "Fg")
     {
-        var palet = Ui.Text("Palet", size, FontWeight.Normal, "Fg", false).With(t => t.FontFamily = Ui.Display);
+        var palet = Ui.Text("Palet", size, FontWeight.Normal, color, false).With(t => t.FontFamily = Ui.Display);
         var mon = new Border { CornerRadius = new CornerRadius(5), Padding = new Thickness(8, 2, 8, 0), Child = Ui.Text("Mon", size, FontWeight.Normal, "AccentFg", false).With(t => t.FontFamily = Ui.Display) }
             .Res(Border.BackgroundProperty, "Accent");
         return Ui.Row(6, palet, mon);
@@ -49,12 +49,14 @@ public sealed class HazardStripe : Control
     static readonly IBrush Yellow = new SolidColorBrush(Color.Parse("#f2b300"));
     static readonly IBrush Black = new SolidColorBrush(Color.Parse("#1f1c19"));
 
+    public bool Rounded { get; set; } = true;
+
     public HazardStripe() { Height = 10; }
 
     public override void Render(DrawingContext ctx)
     {
         var w = Bounds.Width; var h = Bounds.Height;
-        using (ctx.PushClip(new RoundedRect(new Rect(0, 0, w, h), 5)))
+        using (ctx.PushClip(new RoundedRect(new Rect(0, 0, w, h), Rounded ? 5 : 0)))
         {
             ctx.FillRectangle(Yellow, new Rect(0, 0, w, h));
             const double band = 14;

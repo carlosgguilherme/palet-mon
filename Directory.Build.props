@@ -1,0 +1,13 @@
+<Project>
+  <!-- Shared by the core, desktop and Android projects. Releases override Version with the tag. -->
+  <PropertyGroup>
+    <Version>2.2.0</Version>
+    <Product>Palet Mon</Product>
+    <Company>Palet Mon</Company>
+    <Copyright>Projeto de fã, sem ligação com Nintendo, The Pokémon Company ou Cobblemon.</Copyright>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+</Project>

@@ -1,4 +1,3 @@
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -9,7 +8,7 @@ using static PaletMon.UI.Ui;
 
 namespace PaletMon.UI;
 
-public sealed partial class MainWindow : Window
+public sealed partial class MainView : UserControl
 {
     static AppState S => Engine.S;
     readonly StackPanel content = new() { Spacing = 16 };
@@ -18,12 +17,8 @@ public sealed partial class MainWindow : Window
 
     static readonly (string key, string label)[] TabList = { ("time", "Meu time"), ("montar", "Montar time"), ("gerador", "Gerador"), ("batalha", "Batalha"), ("sobre", "Sobre") };
 
-    public MainWindow()
+    public MainView()
     {
-        Title = "Palet Mon";
-        Width = 1320; Height = 900; MinWidth = 960; MinHeight = 600;
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        using (var icon = Assembly.GetExecutingAssembly().GetManifestResourceStream("PaletMon.ico")) Icon = new WindowIcon(icon);
         this.Res(BackgroundProperty, "Bg");
 
         var brand = Row(14, Brand.Logo(72), Col(4, Brand.Wordmark(30), Muted("Seu time, bem empilhado. Fraquezas, cobertura, golpes e times para o Cobbleverse.", 13.5)));
@@ -38,13 +33,13 @@ public sealed partial class MainWindow : Window
 
         scroller = new ScrollViewer { Content = new Border { Padding = new Thickness(24, 4, 24, 40), Child = content } };
         Content = new DockPanel { Children = { header, scroller } };
+        WireUpdates();
         Render();
 #if SELF_TEST
-        // Test builds only: stay out of the way and run the same path as the button.
-        ShowActivated = false; WindowState = WindowState.Minimized;
-        Opened += (_, _) => CheckClicked();
+        // Test builds only: run the same path as the button.
+        Loaded += (_, _) => flow.Check();
 #else
-        Opened += (_, _) => AutoCheck();
+        Loaded += (_, _) => flow.AutoCheck();
 #endif
     }
 

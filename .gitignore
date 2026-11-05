@@ -8,3 +8,7 @@ Releases/
 # arquivos da fase web
 /*.html
 /PaletMon.exe
+
+chaves/
+*.jks
+*.keystore

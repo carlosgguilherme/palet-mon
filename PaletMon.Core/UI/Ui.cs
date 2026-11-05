@@ -10,7 +10,7 @@ namespace PaletMon.UI;
 // Small builders so the tabs can be written as plain C# instead of XAML.
 public static class Ui
 {
-    public static readonly FontFamily Display = new("Bungee, Arial Black, Segoe UI Black, Impact, sans-serif");
+    public static readonly FontFamily Display = new("avares://PaletMon.Core/Assets/Fonts#Bungee, Arial Black, Impact, sans-serif");
     public static readonly FontFamily Mono = new("Cascadia Mono, Consolas, Menlo, monospace");
 
     public static T Res<T>(this T c, AvaloniaProperty prop, string key) where T : Control
@@ -44,6 +44,8 @@ public static class Ui
     }
 
     public static T With<T>(this T c, Action<T> f) { f(c); return c; }
+
+    public static void OpenLink(Control from, string url) => TopLevel.GetTopLevel(from)?.Launcher.LaunchUriAsync(new Uri(url));
 
     public static StackPanel Col(double gap, params Control[] children)
     {
@@ -167,7 +169,7 @@ public static class Ui
                 StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative), EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
                 GradientStops = { new GradientStop(Hex(TypeChart.Color[t[0]]), 0), new GradientStop(Hex(TypeChart.Color[t.Length > 1 ? t[1] : t[0]]), 1) },
             },
-            Child = new TextBlock { Text = initials, FontFamily = Display, FontSize = 18, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center },
+            Child = Sprites.View(p, 46, true, new TextBlock { Text = initials, FontFamily = Display, FontSize = 18, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }),
         };
     }
 

@@ -1,0 +1,53 @@
+# Compila o APK e abre o app em um emulador, tirando fotos de cada tela.
+name: Testar Android
+
+on:
+  push:
+    branches: ['feat/android']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Versão do APK de teste
+        default: 2.2.0
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: build
+        uses: ./.github/actions/build-apk
+        with:
+          version: ${{ inputs.version || '2.2.0' }}
+          keystore-b64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: Palet-Mon-Android.apk
+
+      - name: Ativar aceleração do emulador
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Abrir no emulador
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: bash .github/scripts/android-smoke.sh Palet-Mon-Android.apk telas
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telas
+          path: telas

@@ -10,18 +10,6 @@ using PaletMon.UI;
 
 namespace PaletMon;
 
-public static class Program
-{
-    [STAThread]
-    public static void Main(string[] args)
-    {
-        // must run first: handles the install, update and uninstall hooks
-        Velopack.VelopackApp.Build().Run();
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-    }
-
-    public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace();
-}
 
 public sealed class App : Application
 {
@@ -41,6 +29,7 @@ public sealed class App : Application
         ["Wood"] = ("#c4874a", "#d0965a"),
         ["WoodDark"] = ("#8a5a2e", "#9a6a3c"),
         ["Ink"] = ("#1f1c19", "#1f1c19"),
+        ["White"] = ("#ffffff", "#ffffff"),
         ["Good"] = ("#1f8a5b", "#4cc78c"),
         ["Warn"] = ("#b7791f", "#e0a84a"),
         ["Bad"] = ("#c2362f", "#ef6b62"),
@@ -74,6 +63,8 @@ public sealed class App : Application
         Engine.S = AppState.Load();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             desktop.MainWindow = new MainWindow();
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime phone)
+            phone.MainView = new MobileView();
         base.OnFrameworkInitializationCompleted();
     }
 }

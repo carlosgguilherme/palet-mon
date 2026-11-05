@@ -1,0 +1,62 @@
+name: Compilar APK
+description: Compila e assina o APK do Palet Mon.
+
+inputs:
+  version:
+    description: Versão no formato 2.2.0
+    required: true
+  keystore-b64:
+    required: false
+    default: ''
+  keystore-password:
+    required: false
+    default: ''
+
+outputs:
+  apk:
+    description: Caminho do APK assinado
+    value: ${{ steps.find.outputs.apk }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
+
+    - name: Instalar suporte a Android no .NET
+      shell: bash
+      run: dotnet workload install android
+
+    - name: Compilar e assinar
+      shell: bash
+      env:
+        KEYSTORE_B64: ${{ inputs.keystore-b64 }}
+        PM_PASS: ${{ inputs.keystore-password }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        IFS=. read -r major minor patch <<< "$VERSION"
+        code=$((major * 10000 + minor * 100 + patch))
+        signing=()
+        # without the key the APK gets a debug signature, good for testing but not for release
+        if [ -n "$KEYSTORE_B64" ]; then
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/paletmon.jks"
+          signing=(-p:AndroidKeyStore=true -p:AndroidSigningKeyStore="$RUNNER_TEMP/paletmon.jks" -p:AndroidSigningKeyAlias=paletmon
+            -p:AndroidSigningKeyPass=env:PM_PASS -p:AndroidSigningStorePass=env:PM_PASS)
+        fi
+        dotnet publish PaletMon.Android/PaletMon.Android.csproj -c Release -f net8.0-android \
+          -p:Version="$VERSION" -p:ApplicationVersion="$code" -p:AndroidSdkDirectory="$ANDROID_HOME" "${signing[@]}"
+
+    - name: Localizar APK
+      id: find
+      shell: bash
+      run: |
+        apk="$(find PaletMon.Android/bin/Release -name '*-Signed.apk' | head -1)"
+        cp "$apk" Palet-Mon-Android.apk
+        ls -la Palet-Mon-Android.apk
+        echo "apk=Palet-Mon-Android.apk" >> "$GITHUB_OUTPUT"

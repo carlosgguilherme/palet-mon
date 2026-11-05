@@ -8,7 +8,7 @@ using static PaletMon.UI.Ui;
 
 namespace PaletMon.UI;
 
-public sealed partial class MainWindow
+public sealed partial class MainView
 {
     List<GenResult> lastBuild;
     GenResult genResult;
@@ -90,7 +90,7 @@ public sealed partial class MainWindow
         return Row(4, Step("−", -1), box, Step("+", 1));
     }
 
-    static Control EvoBlock(Mon p, int lv)
+    internal static Control EvoBlock(Mon p, int lv)
     {
         var kids = Engine.NextEvos(p);
         Border box(Control c, bool ready) => new Border { Padding = new Thickness(10, 8), CornerRadius = new CornerRadius(8), Child = c }.Res(Border.BackgroundProperty, ready ? "GoodBg" : "Panel2");
@@ -153,16 +153,16 @@ public sealed partial class MainWindow
         return Card(Col(10, PanelHead(H2("Defesa"), Muted("Dano recebido por tipo de golpe")), g));
     }
 
-    static Control MultCell(double v)
+    internal static Control MultCell(double v, double minWidth = 40)
     {
         var (bg, fg) = v == 0 ? ("ImmBg", "Fg") : v >= 4 ? ("Bad", "Panel") : v >= 2 ? ("BadBg", "Bad") : v <= 0.25 ? ("Good", "Panel") : v < 1 ? ("GoodBg", "Good") : (null, "Muted");
-        var b = new Border { MinWidth = 40, CornerRadius = new CornerRadius(5), Padding = new Thickness(4, 2), Child = Text(TypeChart.Mult(v), 12.5, v == 1 ? FontWeight.Normal : FontWeight.Bold, fg, false).With(t => { t.FontFamily = Mono; t.HorizontalAlignment = HorizontalAlignment.Center; }) };
+        var b = new Border { MinWidth = minWidth, CornerRadius = new CornerRadius(5), Padding = new Thickness(minWidth < 40 ? 0 : 4, 2), Child = Text(TypeChart.Mult(v), 12.5, v == 1 ? FontWeight.Normal : FontWeight.Bold, fg, false).With(t => { t.FontFamily = Mono; t.HorizontalAlignment = HorizontalAlignment.Center; }) };
         if (bg != null) b.Res(Border.BackgroundProperty, bg);
         return b;
     }
-    static Control SumCell(int v, string bg, string fg)
+    internal static Control SumCell(int v, string bg, string fg, double minWidth = 40)
     {
-        var b = new Border { MinWidth = 40, CornerRadius = new CornerRadius(5), Padding = new Thickness(4, 2), Child = Text(v.ToString(), 12.5, FontWeight.Bold, bg != null ? fg : "Muted", false).With(t => t.HorizontalAlignment = HorizontalAlignment.Center) };
+        var b = new Border { MinWidth = minWidth, CornerRadius = new CornerRadius(5), Padding = new Thickness(minWidth < 40 ? 0 : 4, 2), Child = Text(v.ToString(), 12.5, FontWeight.Bold, bg != null ? fg : "Muted", false).With(t => t.HorizontalAlignment = HorizontalAlignment.Center) };
         if (bg != null) b.Res(Border.BackgroundProperty, bg);
         return b;
     }
