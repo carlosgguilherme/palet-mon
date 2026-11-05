@@ -40,7 +40,17 @@ jobs:
         run: dotnet vpk download github --repoUrl ${{ env.REPO_URL }} --token ${{ env.GH_TOKEN }} -o Releases
 
       - name: Empacotar
-        run: dotnet vpk pack -u PaletMonApp -v ${{ env.VERSION }} -p dist/publish -e PaletMon.exe --packTitle "Palet Mon" --packAuthors "Palet Mon" --icon PaletMon/Assets/PaletMon.ico -o Releases
+        run: dotnet vpk pack -u PaletMonApp -v ${{ env.VERSION }} -p dist/publish -e PaletMon.exe --packTitle "Palet Mon" --packAuthors "Palet Mon" --icon PaletMon/Assets/PaletMon.ico --noPortable -o Releases
 
       - name: Publicar release
         run: dotnet vpk upload github --repoUrl ${{ env.REPO_URL }} --token ${{ env.GH_TOKEN }} -o Releases --publish --releaseName "Palet Mon ${{ env.VERSION }}" --tag ${{ github.ref_name }}
+
+      # o link direto do README e das notas depende deste nome
+      - name: Preparar página da release
+        shell: pwsh
+        run: |
+          $repo = "${{ github.repository }}"
+          $tag = "${{ github.ref_name }}"
+          $id = gh api "repos/$repo/releases/tags/$tag" --jq '.assets[] | select(.name=="PaletMonApp-win-Setup.exe") | .id'
+          gh api -X PATCH "repos/$repo/releases/assets/$id" -f name=Palet-Mon-Instalador.exe
+          gh release edit $tag --notes-file .github/release-notes.md

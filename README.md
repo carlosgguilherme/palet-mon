@@ -6,10 +6,11 @@ Seu time, bem empilhado. Um estrategista de time para o **Cobbleverse**, o modpa
 
 ## Baixar
 
-1. Abra a [última versão](https://github.com/carlosgguilherme/palet-mon/releases/latest).
-2. Baixe o `PaletMonApp-win-Setup.exe` e execute.
+**[Baixar o instalador para Windows](https://github.com/carlosgguilherme/palet-mon/releases/latest/download/Palet-Mon-Instalador.exe)**
 
-Não precisa de permissão de administrador. O app abre sozinho e cria atalhos na Área de Trabalho e no Menu Iniciar.
+Abra o arquivo e pronto. Não precisa de permissão de administrador: o app abre sozinho e cria atalhos na Área de Trabalho e no Menu Iniciar.
+
+O código-fonte de cada versão fica separado na página de [releases](https://github.com/carlosgguilherme/palet-mon/releases), em **Source code**.
 
 O Windows pode mostrar o aviso "O Windows protegeu o computador" porque o instalador ainda não tem certificado digital. Clique em **Mais informações** e depois em **Executar assim mesmo**.
 

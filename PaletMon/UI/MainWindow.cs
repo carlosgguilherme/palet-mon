@@ -39,7 +39,7 @@ public sealed partial class MainWindow : Window
         scroller = new ScrollViewer { Content = new Border { Padding = new Thickness(24, 4, 24, 40), Child = content } };
         Content = new DockPanel { Children = { header, scroller } };
         Render();
-#if LOCAL_FEED
+#if SELF_TEST
         // Test builds only: stay out of the way and run the same path as the button.
         ShowActivated = false; WindowState = WindowState.Minimized;
         Opened += (_, _) => CheckClicked();
