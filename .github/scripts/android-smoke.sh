@@ -25,12 +25,17 @@ tab() { adb shell input tap $((w * (2 * $1 + 1) / 10)) $((h * 93 / 100)); sleep 
 
 tab 1; shot 02-montar
 tab 2; shot 03-gerador
-adb shell input tap $((w / 2)) $((h * 13 / 100))
+adb shell input tap $((w / 2)) $((h * 157 / 1000))
 sleep 20
 shot 04-time-gerado
 tab 3; shot 05-batalha
 tab 4; shot 06-sobre
 tab 0; shot 07-meu-time
+adb shell input tap $((w / 2)) $((h * 68 / 100))
+sleep 5
+shot 07b-cartao-aberto
+adb shell input tap $((w / 2)) $((h * 68 / 100))
+sleep 3
 
 # battle mode sheet: opens from the top chip and closes with Back without leaving the app
 adb shell input tap $((w * 85 / 100)) $((h * 8 / 100))
