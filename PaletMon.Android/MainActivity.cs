@@ -15,7 +15,9 @@ namespace PaletMon.Phone;
     MainLauncher = true,
     ScreenOrientation = ScreenOrientation.Portrait,
     WindowSoftInputMode = SoftInput.AdjustResize,
-    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
+    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.SmallestScreenSize | ConfigChanges.ScreenLayout | ConfigChanges.UiMode
+        | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.Navigation | ConfigChanges.Density | ConfigChanges.FontScale | ConfigChanges.Locale
+        | ConfigChanges.LayoutDirection | ConfigChanges.Touchscreen | ConfigChanges.Mcc | ConfigChanges.Mnc)]
 public class MainActivity : AvaloniaMainActivity<PaletMon.App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)

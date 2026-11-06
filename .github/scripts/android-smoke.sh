@@ -24,12 +24,27 @@ for i in 0 1 2 3 4; do
   shot "aba-$i"
 done
 
-adb logcat -d > "$out/logcat.txt"
-grep -E "FATAL EXCEPTION|Unhandled|Exception" "$out/logcat.txt" | head -20
-
 if adb shell pidof "$pkg" > /dev/null; then
   echo "app continua aberto"
 else
   echo "app fechou sozinho"
+  adb logcat -d > "$out/logcat.txt"
   exit 1
 fi
+
+# leaving with Back and opening again must not crash
+adb shell input keyevent KEYCODE_BACK
+sleep 6
+shot depois-de-voltar
+adb shell am start -W -n "$pkg/$pkg.MainActivity"
+sleep 20
+shot reaberto
+
+adb logcat -d > "$out/logcat.txt"
+if grep -q "AndroidRuntime: Process: $pkg" "$out/logcat.txt"; then
+  grep -A12 "AndroidRuntime: Process: $pkg" "$out/logcat.txt" | head -30
+  echo "houve erro fatal"
+  exit 1
+fi
+adb shell pidof "$pkg" > /dev/null || { echo "app nao reabriu"; exit 1; }
+echo "tudo certo"
