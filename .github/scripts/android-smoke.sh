@@ -52,6 +52,7 @@ tap_text() {
 }
 
 swipe_up() { adb shell input swipe $((w / 2)) $((h * 70 / 100)) $((w / 2)) $((h * 30 / 100)) 250; sleep 1; }
+swipe_down() { adb shell input swipe $((w / 2)) $((h * 30 / 100)) $((w / 2)) $((h * 80 / 100)) 250; sleep 1; }
 scroll_to() {
   for _ in $(seq 1 14); do
     [ -n "$(find_text "$1")" ] && return 0
@@ -90,6 +91,8 @@ wait_text "NÍVEL" || fail "cartão não abriu"
 shot 02-cartao-aberto
 swipe_up
 shot 02b-cartao-rolado
+swipe_down
+swipe_down
 tap_text "Defesa"
 wait_text "Dano recebido" || fail "tabela de defesa"
 shot 03-defesa
