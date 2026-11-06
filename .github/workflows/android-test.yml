@@ -49,10 +49,10 @@ jobs:
           path: Palet-Mon-Android.apk
 
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
-          name: relatorio-testes
-          path: android/app/build/reports/tests
+          name: resultado-testes
+          path: android/app/build/test-results
 
       - name: Ativar aceleração do emulador
         run: |

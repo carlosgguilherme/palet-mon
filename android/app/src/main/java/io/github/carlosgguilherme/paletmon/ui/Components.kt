@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -276,7 +277,7 @@ fun SelectRow(label: String, value: String, modifier: Modifier = Modifier, open:
             Label(label)
             Txt(value, 14.5f, FontWeight.Bold, maxLines = 1)
         }
-        Txt("⌄", 18f, FontWeight.Bold, pm.muted)
+        Icon(Icons.down, null, Modifier.size(22.dp), tint = pm.muted)
     }
 }
 

@@ -86,7 +86,7 @@ echo "--- Meu time"
 wait_text "cobertura" 30 || fail "tela inicial não abriu"
 shot 01-meu-time
 tap_text "Sprigatito"
-wait_text "Nível" || fail "cartão não abriu"
+wait_text "NÍVEL" || fail "cartão não abriu"
 shot 02-cartao-aberto
 swipe_up
 shot 02b-cartao-rolado

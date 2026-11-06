@@ -151,6 +151,7 @@ class ParityTest {
         val report = different.take(15).joinToString("\n") { "C#:     ${expected[it]}\nKotlin: ${lines.getOrNull(it)}" }
         assertEquals("linhas: C# ${expected.size}, Kotlin ${lines.size}\n$report", 0, different.size)
         assertEquals(expected.size, lines.size)
+        println("${lines.size} linhas iguais ao motor C#")
     }
 
     @Test
