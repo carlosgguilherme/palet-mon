@@ -23,6 +23,6 @@ public class MainActivity : AvaloniaMainActivity<PaletMon.App>
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         Updater.Current = new AndroidUpdater(global::Android.App.Application.Context);
-        return base.CustomizeAppBuilder(builder);
+        return base.CustomizeAppBuilder(builder).WithInterFont();
     }
 }

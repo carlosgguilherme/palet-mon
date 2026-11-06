@@ -35,6 +35,7 @@ public sealed partial class MobileView : UserControl
     public MobileView()
     {
         this.Res(BackgroundProperty, "Bg");
+        FontFamily = new FontFamily("fonts:Inter#Inter"); // the phone's default font ignores font weights
         modeChip = new TextBlock { FontSize = 12.5, FontWeight = FontWeight.Bold, Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center };
 
         scroller = new ScrollViewer { Content = new Border { Padding = new Thickness(14, 14, 14, 24), Child = page } };

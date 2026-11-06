@@ -12,6 +12,7 @@ Directory.CreateDirectory(dir);
 
 AppBuilder.Configure<App>()
     .UseSkia()
+    .WithInterFont()
     .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false })
     .SetupWithoutStarting();
 
