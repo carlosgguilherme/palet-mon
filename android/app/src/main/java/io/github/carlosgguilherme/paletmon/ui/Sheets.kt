@@ -37,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -171,7 +173,7 @@ private fun ColumnScope.MonBody(s: MonSheet, ui: UiState, hide: Hide) {
         if (query.isEmpty()) Muted("Nome do Pokémon", 15f)
         BasicTextField(
             query, { query = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Nome do Pokémon" },
             singleLine = true,
             textStyle = TextStyle(color = pm.fg, fontSize = 15.sp),
             cursorBrush = SolidColor(pm.accentInk),

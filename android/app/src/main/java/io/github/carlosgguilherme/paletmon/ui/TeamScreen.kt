@@ -7,11 +7,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -170,8 +172,8 @@ private fun MonDetails(x: Member, i: Int, model: AppModel, ui: UiState) {
             Label(moveLabel)
             if (x.moves.isEmpty()) Muted("Sem golpes de dano disponíveis ainda.")
             for (pair in x.moves.chunked(2)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    for (mv in pair) MoveCard(mv, Modifier.weight(1f))
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    for (mv in pair) MoveCard(mv, Modifier.weight(1f).fillMaxHeight())
                     if (pair.size == 1) Spacer(Modifier.weight(1f))
                 }
             }

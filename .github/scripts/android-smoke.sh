@@ -14,26 +14,32 @@ fail() {
   exit 1
 }
 
-# Center of the element with this exact text, or else the first one containing it.
+# Center of the element with this exact text or description, or else the first one containing it.
+# With a second argument, the lowest one on screen that matches, to pick a row below the search box.
 find_text() {
   adb exec-out uiautomator dump /dev/tty 2>/dev/null | python3 -c '
 import html, re, sys
 want = sys.argv[1]
-exact, near = None, None
+lowest = len(sys.argv) > 2
+exact, near = [], []
 for node in re.findall(r"<node [^>]*>", sys.stdin.read()):
-    text = re.search(r" text=\"([^\"]*)\"", node)
     box = re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", node)
-    if not text or not box:
+    if not box:
         continue
-    value = html.unescape(text.group(1))
     x1, y1, x2, y2 = map(int, box.groups())
-    center = f"{(x1 + x2) // 2} {(y1 + y2) // 2}"
-    if value == want and exact is None:
-        exact = center
-    elif want in value and near is None:
-        near = center
-print(exact or near or "")
-' "$1"
+    center = ((x1 + x2) // 2, (y1 + y2) // 2)
+    for attr in ("text", "content-desc"):
+        found = re.search(rf" {attr}=\"([^\"]*)\"", node)
+        value = html.unescape(found.group(1)) if found else ""
+        if value == want:
+            exact.append(center)
+        elif want in value:
+            near.append(center)
+hits = exact + near
+if lowest and hits:
+    hits = [max(hits, key=lambda c: c[1])]
+print(f"{hits[0][0]} {hits[0][1]}" if hits else "")
+' "$@"
 }
 
 wait_text() {
@@ -48,6 +54,12 @@ wait_text() {
 tap_text() {
   wait_text "$1" "${2:-20}" || fail "não achei \"$1\""
   adb shell input tap $(find_text "$1")
+  sleep 1
+}
+
+tap_row() {
+  wait_text "$1" || fail "não achei \"$1\" na lista"
+  adb shell input tap $(find_text "$1" lowest)
   sleep 1
 }
 
@@ -111,7 +123,7 @@ tap_text "Nome do Pokémon"
 adb shell input text Garchomp
 sleep 2
 shot 06b-busca-digitada
-tap_text "Garchomp"
+tap_row "Garchomp"
 wait_text "Garchomp" || fail "Pokémon não foi escolhido"
 scroll_to "Montar time em volta deles"
 shot 07-montar
@@ -142,7 +154,7 @@ wait_text "Nome do Pokémon" || fail "busca do adversário não abriu"
 tap_text "Nome do Pokémon"
 adb shell input text Gyarados
 sleep 2
-tap_text "Gyarados"
+tap_row "Gyarados"
 wait_text "Trocar adversário" || fail "adversário não foi escolhido"
 shot 12-adversario
 scroll_to "Como jogar"
