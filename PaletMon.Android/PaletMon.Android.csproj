@@ -11,6 +11,7 @@
     <ApplicationVersion>20200</ApplicationVersion>
     <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <RunAOTCompilation>false</RunAOTCompilation>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <AndroidLinkMode>None</AndroidLinkMode>
     <RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
