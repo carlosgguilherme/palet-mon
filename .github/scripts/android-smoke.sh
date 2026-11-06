@@ -164,7 +164,7 @@ echo "--- Modo de combate"
 tap_text "Singles 6x6"
 wait_text "Modo de combate" || fail "painel de modo não abriu"
 shot 13-modo
-tap_text "Regra pronta"
+tap_text "REGRA PRONTA"
 tap_text "Duplas 4 de 6 · Nv 50 (estilo VGC)"
 wait_text "Modo de combate" || fail "painel de modo não voltou"
 shot 14-modo-duplas
