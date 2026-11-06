@@ -22,7 +22,7 @@ import html, re, sys
 for node in re.findall(r"<node [^>]*>", sys.stdin.read()):
     text = re.search(r" text=\"([^\"]*)\"", node)
     box = re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", node)
-    if text and box and sys.argv[1].lower() in html.unescape(text.group(1)).lower():
+    if text and box and sys.argv[1].lower() == html.unescape(text.group(1)).lower():
         x1, y1, x2, y2 = map(int, box.groups())
         print((x1 + x2) // 2, (y1 + y2) // 2)
         break
@@ -83,7 +83,7 @@ sleep 3
 shot 05-instalador
 
 wait_text "Update" 20 || fail "botão do instalador"
-adb shell input tap $(find_text "Update" | tail -1)
+adb shell input tap $(find_text "Update")
 
 for _ in $(seq 1 60); do
   [ "$(version)" = "$expected" ] && break
