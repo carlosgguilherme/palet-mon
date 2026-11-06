@@ -59,18 +59,10 @@ jobs:
   android:
     needs: release
     runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE_B64 != '' }}
     steps:
       - uses: actions/checkout@v4
-
-      # uma assinatura diferente impediria quem já tem o app de atualizar
-      - name: Conferir chave de assinatura
-        env:
-          KEY: ${{ secrets.ANDROID_KEYSTORE_B64 }}
-        run: |
-          if [ -z "$KEY" ]; then
-            echo "Faltam os segredos ANDROID_KEYSTORE_B64 e ANDROID_KEYSTORE_PASSWORD."
-            exit 1
-          fi
 
       - uses: ./.github/actions/build-apk
         with:
@@ -79,4 +71,13 @@ jobs:
           keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       - name: Anexar APK à release
+        if: env.HAS_KEY == 'true'
         run: gh release upload "${{ github.ref_name }}" Palet-Mon-Android.apk --clobber
+
+      # sem a chave aqui, o APK não pode ir para a release: uma assinatura diferente impediria
+      # quem já tem o app de atualizar. O publicar-android.ps1 assina no PC e anexa.
+      - uses: actions/upload-artifact@v4
+        if: env.HAS_KEY != 'true'
+        with:
+          name: apk-sem-chave
+          path: Palet-Mon-Android.apk

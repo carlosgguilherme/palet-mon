@@ -64,7 +64,9 @@ Quem já tem o app recebe o aviso da versão nova. Para gerar o instalador no se
 
 ### Chave do Android
 
-O APK precisa ser sempre assinado com a mesma chave, senão quem já tem o app não consegue atualizar. Ela fica nos segredos do repositório (`ANDROID_KEYSTORE_B64` e `ANDROID_KEYSTORE_PASSWORD`) e na pasta `chaves/`, que não vai para o Git. Guarde uma cópia em lugar seguro.
+O APK precisa ser sempre assinado com a mesma chave, senão quem já tem o app não consegue atualizar. Ela fica na pasta `chaves/`, que não vai para o Git. Guarde uma cópia em lugar seguro.
+
+Depois que o workflow da tag terminar, assine e anexe o APK à release com `.\publicar-android.ps1 -Versao 2.2.0`. Se a chave estiver nos segredos do repositório (`ANDROID_KEYSTORE_B64` e `ANDROID_KEYSTORE_PASSWORD`), o workflow faz isso sozinho.
 
 ### Assinatura digital
 
