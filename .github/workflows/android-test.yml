@@ -3,7 +3,14 @@ name: Testar Android
 
 on:
   push:
-    branches: ['feat/android-nativo']
+    branches: ['main', 'feat/**']
+    paths:
+      - 'android/**'
+      - 'PaletMon.Core/Logic/**'
+      - 'PaletMon.Core/Assets/**'
+      - 'PaletMon.Snap/**'
+      - '.github/scripts/android-smoke.sh'
+      - '.github/workflows/android-test.yml'
   workflow_dispatch:
     inputs:
       version:

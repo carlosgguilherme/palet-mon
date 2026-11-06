@@ -87,8 +87,10 @@ private fun LazyListScope.teamSection(d: TeamData, model: AppModel, ui: UiState)
     items(shown) { AlertBox(it) }
     if (d.alerts.size > 2) {
         item {
+            val more = d.alerts.size - 2
+            val label = if (ui.allAlerts) "Mostrar menos avisos" else if (more == 1) "Ver mais 1 aviso" else "Ver mais $more avisos"
             Box(Modifier.fillMaxWidth().clickable { ui.allAlerts = !ui.allAlerts }.padding(vertical = 2.dp), contentAlignment = Alignment.Center) {
-                Txt(if (ui.allAlerts) "Mostrar menos avisos" else "Ver mais ${d.alerts.size - 2} avisos", 13.5f, FontWeight.Bold, pm.accentInk)
+                Txt(label, 13.5f, FontWeight.Bold, pm.accentInk)
             }
         }
     }

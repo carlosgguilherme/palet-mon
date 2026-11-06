@@ -1,0 +1,47 @@
+# Instala um APK já publicado e atualiza de dentro do app até a última release, como quem já tem o app.
+name: Testar atualização do Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: Tag da versão instalada antes de atualizar
+        default: v2.2.0
+      to:
+        description: Versão esperada depois de atualizar
+        default: 2.3.0
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar versão antiga
+        run: gh release download "${{ inputs.from }}" -p Palet-Mon-Android.apk -O antigo.apk
+
+      - name: Ativar aceleração do emulador
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Atualizar no emulador
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: bash .github/scripts/android-update.sh antigo.apk ${{ inputs.to }} telas
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telas-atualizacao
+          path: telas

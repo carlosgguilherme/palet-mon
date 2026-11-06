@@ -210,10 +210,14 @@ shot 19-atualizacoes
 tap_text "Verificar atualizações"
 if wait_text "Baixando a versão" 20; then
   shot 20-baixando
-  wait_text "Confirme a instalação" 180 || fail "o download da atualização não terminou"
-  sleep 3
+  # when the download ends the Android installer opens on top of the app
+  for _ in $(seq 1 90); do
+    adb shell dumpsys window | grep -E 'mCurrentFocus' > "$out/instalador.txt"
+    grep -qi 'packageinstaller' "$out/instalador.txt" && break
+    sleep 2
+  done
   shot 21-instalador
-  adb shell dumpsys window | grep -E 'mCurrentFocus' | tee "$out/instalador.txt"
+  cat "$out/instalador.txt"
   grep -qi 'packageinstaller' "$out/instalador.txt" || fail "o instalador do Android não abriu"
 else
   echo "AVISO: sem atualização para baixar"
