@@ -43,34 +43,34 @@ dotnet tool restore
 dotnet run --project PaletMon
 ```
 
-- `PaletMon.Core`: dados, lógica e telas, usados pelos dois apps.
+- `PaletMon.Core`: dados, lógica e telas do app de PC.
   - `Logic`: tipos, golpes, gerador, modos de combate e fluxo de atualização.
-  - `UI`: `MainView` é a tela de PC e `MobileView` é a de celular.
+  - `UI`: telas do app de PC.
   - `Assets/dex.json`: dados da PokéAPI.
 - `PaletMon`: app de PC, com instalador e atualização pelo Velopack.
-- `PaletMon.Android`: app de Android, compilado pelo GitHub Actions.
-- `PaletMon.Snap`: tira fotos das telas sem abrir janela. Use `--phone` para as telas de celular.
+- `android`: app nativo de Android, em Kotlin com Jetpack Compose, compilado pelo GitHub Actions. Usa o mesmo `dex.json` e tem o mesmo motor do PC: o teste `ParityTest` compara os dois.
+- `PaletMon.Snap`: tira fotos das telas sem abrir janela. Com `--golden <arquivo>`, gera os resultados do motor usados pelo `ParityTest`.
 
 ### Lançar uma versão nova
 
 Crie uma tag. O GitHub Actions gera o instalador, o APK, a atualização e a release:
 
 ```powershell
-git tag v2.2.0
-git push origin v2.2.0
+git tag v2.3.0
+git push origin v2.3.0
 ```
 
-Quem já tem o app recebe o aviso da versão nova. Para gerar o instalador no seu PC, sem publicar, rode `.\publicar.ps1 -Versao 2.2.0`.
+Quem já tem o app recebe o aviso da versão nova. Para gerar o instalador no seu PC, sem publicar, rode `.\publicar.ps1 -Versao 2.3.0`.
 
 ### Chave do Android
 
 O APK precisa ser sempre assinado com a mesma chave, senão quem já tem o app não consegue atualizar. Ela fica na pasta `chaves/`, que não vai para o Git. Guarde uma cópia em lugar seguro.
 
-Depois que o workflow da tag terminar, assine e anexe o APK à release com `.\publicar-android.ps1 -Versao 2.2.0`. Se a chave estiver nos segredos do repositório (`ANDROID_KEYSTORE_B64` e `ANDROID_KEYSTORE_PASSWORD`), o workflow faz isso sozinho.
+Depois que o workflow da tag terminar, assine e anexe o APK à release com `.\publicar-android.ps1 -Versao 2.3.0`.
 
 ### Assinatura digital
 
-Com um certificado de assinatura de código instalado no Windows, rode `.\publicar.ps1 -Versao 2.2.0 -Certificado <impressão digital>`. Para assinar pelo GitHub Actions, adicione os parâmetros de assinatura ao passo `vpk pack` do workflow.
+Com um certificado de assinatura de código instalado no Windows, rode `.\publicar.ps1 -Versao 2.3.0 -Certificado <impressão digital>`. Para assinar pelo GitHub Actions, adicione os parâmetros de assinatura ao passo `vpk pack` do workflow.
 
 ## Aviso
 

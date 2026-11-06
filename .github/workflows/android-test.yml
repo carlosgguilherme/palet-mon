@@ -1,33 +1,58 @@
-# Compila o APK e abre o app em um emulador, tirando fotos de cada tela.
+# Compara o motor Kotlin com o C#, compila o APK e usa cada tela em um emulador, tirando fotos.
 name: Testar Android
 
 on:
   push:
-    branches: ['feat/android']
+    branches: ['feat/android-nativo']
   workflow_dispatch:
     inputs:
       version:
-        description: Versão do APK de teste
-        default: 2.2.0
+        description: Versão do APK de teste (menor que a última release, para testar a atualização)
+        default: 2.1.9
 
 jobs:
   android:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
+    env:
+      PALETMON_GOLDEN: ${{ github.workspace }}/golden.txt
     steps:
       - uses: actions/checkout@v4
 
-      - id: build
-        uses: ./.github/actions/build-apk
+      - uses: actions/setup-dotnet@v4
         with:
-          version: ${{ inputs.version || '2.2.0' }}
-          keystore-b64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
-          keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          dotnet-version: 8.0.x
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Gerar resultados do motor C#
+        run: dotnet run --project PaletMon.Snap -c Release -- --golden "$PALETMON_GOLDEN"
+
+      - name: Comparar motor Kotlin com C#
+        working-directory: android
+        run: ./gradlew testDebugUnitTest
+
+      - name: Compilar APK
+        working-directory: android
+        run: ./gradlew assembleRelease -PappVersion=${{ inputs.version || '2.1.9' }} -PsignWithDebug=true
+
+      - run: cp android/app/build/outputs/apk/release/app-release.apk Palet-Mon-Android.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: apk
           path: Palet-Mon-Android.apk
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: relatorio-testes
+          path: android/app/build/reports/tests
 
       - name: Ativar aceleração do emulador
         run: |

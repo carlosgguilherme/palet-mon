@@ -59,25 +59,25 @@ jobs:
   android:
     needs: release
     runs-on: ubuntu-latest
-    env:
-      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE_B64 != '' }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/build-apk
+      - uses: actions/setup-java@v4
         with:
-          version: ${{ github.ref_name }}
-          keystore-b64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
-          keystore-password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          distribution: temurin
+          java-version: 17
 
-      - name: Anexar APK à release
-        if: env.HAS_KEY == 'true'
-        run: gh release upload "${{ github.ref_name }}" Palet-Mon-Android.apk --clobber
+      - uses: gradle/actions/setup-gradle@v4
 
-      # sem a chave aqui, o APK não pode ir para a release: uma assinatura diferente impediria
-      # quem já tem o app de atualizar. O publicar-android.ps1 assina no PC e anexa.
+      - name: Compilar APK
+        working-directory: android
+        run: ./gradlew assembleRelease -PappVersion=${{ github.ref_name }}
+
+      - run: cp android/app/build/outputs/apk/release/app-release-unsigned.apk Palet-Mon-Android.apk
+
+      # a chave fica só no PC: uma assinatura diferente impediria quem já tem o app de atualizar.
+      # O publicar-android.ps1 assina este APK e anexa à release.
       - uses: actions/upload-artifact@v4
-        if: env.HAS_KEY != 'true'
         with:
           name: apk-sem-chave
           path: Palet-Mon-Android.apk

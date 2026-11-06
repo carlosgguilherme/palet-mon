@@ -12,3 +12,9 @@ Releases/
 chaves/
 *.jks
 *.keystore
+
+# Android
+.gradle/
+build/
+local.properties
+.kotlin/

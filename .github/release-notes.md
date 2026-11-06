@@ -16,6 +16,8 @@ Abra o arquivo no celular. Na primeira vez, o Android pede para permitir a insta
 
 Sempre que você abrir o app, ele procura uma versão nova e pergunta se quer atualizar. Isso precisa de internet.
 
+A partir da versão 2.3.0, o app de Android é nativo, escrito em Kotlin. Ele abre mais rápido, ficou bem menor e usa a taxa de atualização máxima da tela. Quem já tem o app recebe a atualização normalmente e continua com o time salvo.
+
 ## Código-fonte
 
 Para ver ou modificar o código, baixe **Source code (zip)** ou **Source code (tar.gz)** em Assets, logo abaixo.

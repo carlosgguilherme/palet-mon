@@ -1,7 +1,7 @@
 ﻿# Assina no PC o APK que o GitHub compilou e anexa à release. A chave não sai deste computador.
 # Rode depois que o workflow Release da tag terminar:
 #
-#   .\publicar-android.ps1 -Versao 2.2.0
+#   .\publicar-android.ps1 -Versao 2.3.0
 param([Parameter(Mandatory = $true)] [string] $Versao)
 
 $ErrorActionPreference = "Stop"
@@ -24,6 +24,8 @@ if (-not $assinador) {
     $assinador = Get-ChildItem $ferramentas -Recurse -Filter apksigner.jar | Select-Object -First 1
 }
 
+$alinhador = Get-ChildItem $ferramentas -Recurse -Filter zipalign.exe | Select-Object -First 1
+
 $run = (& $gh run list --workflow Release --branch $tag --limit 1 --json databaseId | ConvertFrom-Json)[0].databaseId
 if (-not $run) { throw "Não encontrei o workflow Release da tag $tag." }
 
@@ -33,9 +35,12 @@ Remove-Item $pasta -Recurse -Force -ErrorAction SilentlyContinue
 if ($LASTEXITCODE -ne 0) { throw "Não consegui baixar o APK do workflow $run." }
 
 $entrada = Join-Path $pasta "Palet-Mon-Android.apk"
+$alinhado = Join-Path $pasta "alinhado.apk"
 $saida = Join-Path $pasta "assinado\Palet-Mon-Android.apk"
 New-Item -ItemType Directory -Force (Split-Path $saida) | Out-Null
-& java -jar $assinador.FullName sign --ks $jks --ks-type PKCS12 --ks-key-alias paletmon --ks-pass "file:$senha" --out $saida $entrada
+& $alinhador.FullName -f -p 4 $entrada $alinhado
+if ($LASTEXITCODE -ne 0) { throw "O alinhamento do APK falhou." }
+& java -jar $assinador.FullName sign --ks $jks --ks-type PKCS12 --ks-key-alias paletmon --ks-pass "file:$senha" --out $saida $alinhado
 if ($LASTEXITCODE -ne 0) { throw "A assinatura falhou." }
 & java -jar $assinador.FullName verify --print-certs $saida | Select-String "certificate DN|SHA-256"
 if ($LASTEXITCODE -ne 0) { throw "A verificação da assinatura falhou." }

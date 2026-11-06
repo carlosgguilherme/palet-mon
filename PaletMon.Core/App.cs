@@ -63,8 +63,6 @@ public sealed class App : Application
         Engine.S = AppState.Load();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             desktop.MainWindow = new MainWindow();
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime phone)
-            phone.MainView = new MobileView();
         base.OnFrameworkInitializationCompleted();
     }
 }
