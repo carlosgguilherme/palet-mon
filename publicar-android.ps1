@@ -35,7 +35,7 @@ if ($LASTEXITCODE -ne 0) { throw "Não consegui baixar o APK do workflow $run." 
 $entrada = Join-Path $pasta "Palet-Mon-Android.apk"
 $saida = Join-Path $pasta "assinado\Palet-Mon-Android.apk"
 New-Item -ItemType Directory -Force (Split-Path $saida) | Out-Null
-& java -jar $assinador.FullName sign --ks $jks --ks-type PKCS12 --ks-key-alias paletmon --ks-pass "file:$senha" --key-pass "file:$senha" --out $saida $entrada
+& java -jar $assinador.FullName sign --ks $jks --ks-type PKCS12 --ks-key-alias paletmon --ks-pass "file:$senha" --out $saida $entrada
 if ($LASTEXITCODE -ne 0) { throw "A assinatura falhou." }
 & java -jar $assinador.FullName verify --print-certs $saida | Select-String "certificate DN|SHA-256"
 if ($LASTEXITCODE -ne 0) { throw "A verificação da assinatura falhou." }
