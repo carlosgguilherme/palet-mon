@@ -38,6 +38,12 @@ class ParityTest {
             ids(Engine.nextEvos(p)), ids(Engine.finalForms(p)), Engine.evoText(p.evo), b(Engine.isFinal(p)), b(Engine.isBasic(p)),
             f.spread, b(f.fake), b(f.redirect), b(f.speed), b(f.eq),
         )
+        ev("ev", p)
+    }
+
+    private fun ev(tag: String, p: Mon) {
+        val b = Engine.buildOf(p)
+        add("ev", tag, p.id, b.target.id, Engine.evText(b), Engine.natureText(b))
     }
 
     private fun moves(preset: String, p: Mon) {
@@ -62,6 +68,7 @@ class ParityTest {
         for (x in members) x.moves = Engine.pickMoves(x.p, Engine.battleLv(x.lv), s.tms)
         val sc = Engine.scoreTeam(members)
 
+        for (x in members) ev(tag, x.p)
         add("score", tag, n(sc.score), n(sc.defPen), n(sc.dupPen), n(sc.avgBst), j(sc.covered), j(sc.holes), j(sc.typeCount.map { "${it.key}=${it.value}" }))
         for (r in sc.table) add("def", tag, r.atk, j(r.mults.map(::n)), r.weak, r.res)
         for (a in Engine.teamAlerts(members, sc)) add("alert", tag, a.kind, a.text)

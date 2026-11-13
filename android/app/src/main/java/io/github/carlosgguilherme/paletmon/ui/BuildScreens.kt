@@ -78,6 +78,7 @@ private fun ResultCard(
     val cores = remember(r) { r.team.filter { it.core } }
     val why = remember(r, cfg) { Engine.explainTeam(r.team, cfg) }
     val moves = remember(r, tms) { r.team.map { z -> Engine.pickMoves(z.p, null, tms).joinToString(" · ") { it.name } } }
+    val evs = remember(r) { r.team.map { z -> Engine.buildOf(z.p).let { "EVs: **${Engine.evText(it)}** · ${it.nature}" } } }
     val sc = r.sc
     Card(pad = 14.dp, highlight = best) {
         Heading(title, 16f)
@@ -101,6 +102,7 @@ private fun ResultCard(
                     Chips(z.p.types)
                     Rich("Habilidade: **${z.ab}**", 13f)
                     Muted("${Engine.roleOf(z.p).name} · BST ${z.p.bst}", 12.5f)
+                    Rich(evs[i], 12.5f)
                     if (reasons && !z.core && cores.isNotEmpty()) Txt(Engine.supportReason(z, cores), 12.5f)
                     Muted(moves[i], 12.5f)
                 }

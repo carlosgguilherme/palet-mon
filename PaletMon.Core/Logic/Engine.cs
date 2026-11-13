@@ -64,6 +64,7 @@ public sealed record BoxDef(string Key, string Title, string Desc, string Extra 
 public sealed record Preset(string Label, string Format, int Size, int Pick, string Level, bool BanLegends, bool SleepClause);
 public sealed record Weather(string Label, string[] Setters, string[] Abusers, string[] Good, string[] Bad);
 public sealed record Ranked(Member X, PMove Best, double Mult, double Incoming, string Speed, double Score);
+public sealed record EvBuild(string Nature, int Plus, int Minus, int[] Evs, Mon Target);
 
 public static class Engine
 {
@@ -231,6 +232,49 @@ public static class Engine
         if (offense >= 85) return new($"Atacante {kind}", "Foque em golpes STAB fortes e um golpe de cobertura.");
         return new("Em desenvolvimento", "Atributos baixos ainda. Vale evoluir antes de confiar nele em lutas difíceis.");
     }
+
+    // ---------- EVs and nature ----------
+    public static readonly string[] StatShort = { "HP", "ATQ", "DEF", "AT.E", "DF.E", "VEL" };
+    static readonly string[,] NatureNames =
+    {
+        // minus: atk, def, spa, spd, spe
+        { "Hardy", "Lonely", "Adamant", "Naughty", "Brave" },   // plus atk
+        { "Bold", "Docile", "Impish", "Lax", "Relaxed" },       // plus def
+        { "Modest", "Mild", "Bashful", "Rash", "Quiet" },       // plus spa
+        { "Calm", "Gentle", "Careful", "Quirky", "Sassy" },     // plus spd
+        { "Timid", "Hasty", "Jolly", "Naive", "Serious" },      // plus spe
+    };
+
+    // Same split as RoleOf. EVs stay after evolving, so a Pokémon that still evolves is planned as its strongest final form
+    // (except in Little Cup, where it stays as it is).
+    public static EvBuild BuildOf(Mon p)
+    {
+        var t = IsFinal(p) || S.Mode.Level == "lc" ? p : FinalForms(p).OrderByDescending(f => f.Bst).First();
+        var b = t.Stats;
+        // Huge Power and Pure Power double Attack, so those Pokémon are built physical whatever their base stats say
+        bool power = t.Abilities.Any(a => a.TrimStart('*') is "Huge Power" or "Pure Power");
+        var style = power ? 'P' : StyleOf(t);
+        int bulk = b[0] + b[2] + b[4], offense = Math.Max(power ? b[1] * 2 : b[1], b[3]), spe = b[5];
+        int off = style == 'P' ? 1 : style == 'S' ? 3 : b[1] >= b[3] ? 1 : 3;
+        int unused = off == 1 ? 3 : 1;
+        int weak = b[2] <= b[4] ? 2 : 4, strong = weak == 2 ? 4 : 2;
+        int drop = style == 'M' ? strong : unused; // mixed attackers keep both attack stats
+        var evs = new int[6];
+        int plus, minus;
+        void Put(int a, int c, int d) { evs[a] = 252; evs[c] = 252; evs[d] = 4; }
+        if (spe >= 95 && offense >= 95) { Put(off, 5, 0); plus = 5; minus = drop; }
+        else if (bulk >= 270 && offense < 95) { Put(0, weak, strong); plus = weak; minus = style == 'P' ? 3 : 1; }
+        else if (bulk >= 260) { Put(0, off, weak); plus = off; minus = drop; }
+        else if (spe < 60 && offense >= 95) { Put(0, off, weak); plus = off; minus = 5; }
+        else if (offense >= 85) { Put(off, 5, 0); plus = off; minus = drop; }
+        else { Put(0, 5, weak); plus = 5; minus = unused; }
+        return new EvBuild(NatureNames[plus - 1, minus - 1], plus, minus, evs, t);
+    }
+
+    public static string EvText(EvBuild b) => string.Join(" · ", Enumerable.Range(0, 6).Where(i => b.Evs[i] > 0)
+        .OrderByDescending(i => b.Evs[i]).ThenBy(i => i).Select(i => $"{b.Evs[i]} {StatShort[i]}"));
+
+    public static string NatureText(EvBuild b) => $"{b.Nature} (+{StatShort[b.Plus]}, −{StatShort[b.Minus]})";
 
     // ---------- battle mode ----------
     public static bool IsMulti => S.Mode.Format != "singles";

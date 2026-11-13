@@ -169,6 +169,7 @@ private fun MonDetails(x: Member, i: Int, model: AppModel, ui: UiState) {
             Muted(role.tip, 13f)
         }
         StatBars(x.p)
+        EvBox(x.p)
         EvoBlock(x.p, x.lv)
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Label(moveLabel)

@@ -50,6 +50,13 @@ static class Golden
         Add("mon", p.Id, p.Name, p.Bst, role.Name, role.Tip, Engine.StyleOf(p), Engine.DefaultAbility(p), J(Engine.AbilityNames(p)),
             Ids(Engine.NextEvos(p)), Ids(Engine.FinalForms(p)), Engine.EvoText(p.Evo), B(Engine.IsFinal(p)), B(Engine.IsBasic(p)),
             f.Spread, B(f.Fake), B(f.Redirect), B(f.Speed), B(f.Eq));
+        Ev("ev", p);
+    }
+
+    static void Ev(string tag, Mon p)
+    {
+        var b = Engine.BuildOf(p);
+        Add("ev", tag, p.Id, b.Target.Id, Engine.EvText(b), Engine.NatureText(b));
     }
 
     static void Moves(string preset, Mon p)
@@ -76,6 +83,7 @@ static class Golden
         foreach (var x in members) x.Moves = Engine.PickMoves(x.P, Engine.BattleLv(x.Lv), s.Tms);
         var sc = Engine.ScoreTeam(members);
 
+        foreach (var x in members) Ev(tag, x.P);
         Add("score", tag, N(sc.Score), N(sc.DefPen), N(sc.DupPen), N(sc.AvgBst), J(sc.Covered), J(sc.Holes), J(sc.TypeCount.Select(kv => $"{kv.Key}={kv.Value}")));
         foreach (var r in sc.Table) Add("def", tag, r.Atk, J(r.Mults.Select(N)), r.Weak, r.Res);
         foreach (var a in Engine.TeamAlerts(members, sc)) Add("alert", tag, a.Kind, a.Text);

@@ -6,7 +6,7 @@ plugins {
 }
 
 // Releases pass -PappVersion from the tag.
-val appVersion = (findProperty("appVersion") as String?)?.removePrefix("v") ?: "2.3.0"
+val appVersion = (findProperty("appVersion") as String?)?.removePrefix("v") ?: "2.3.1"
 val versionParts = appVersion.split(".").map { it.toInt() }
 val dexDir = layout.buildDirectory.dir("generated/dex")
 

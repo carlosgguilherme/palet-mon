@@ -55,6 +55,7 @@ data class BoxDef(val key: String, val title: String, val desc: String, val extr
 data class Preset(val label: String, val format: String, val size: Int, val pick: Int, val level: String, val banLegends: Boolean, val sleepClause: Boolean)
 data class Weather(val label: String, val setters: List<String>, val abusers: List<String>, val good: List<String>, val bad: List<String>)
 class Ranked(val x: Member, val best: PMove?, val mult: Double, val incoming: Double, val speed: String?, val score: Double)
+class EvBuild(val nature: String, val plus: Int, val minus: Int, val evs: IntArray, val target: Mon)
 class Coverage(val type: String, val best: Double, val who: List<String>)
 class Suggestion(val p: Mon, val why: String)
 
@@ -230,6 +231,52 @@ object Engine {
         if (offense >= 85) return Role("Atacante $kind", "Foque em golpes STAB fortes e um golpe de cobertura.")
         return Role("Em desenvolvimento", "Atributos baixos ainda. Vale evoluir antes de confiar nele em lutas difíceis.")
     }
+
+    // ---------- EVs and nature ----------
+    val statShort = listOf("HP", "ATQ", "DEF", "AT.E", "DF.E", "VEL")
+    private val natureNames = listOf(
+        // minus: atk, def, spa, spd, spe
+        listOf("Hardy", "Lonely", "Adamant", "Naughty", "Brave"), // plus atk
+        listOf("Bold", "Docile", "Impish", "Lax", "Relaxed"), // plus def
+        listOf("Modest", "Mild", "Bashful", "Rash", "Quiet"), // plus spa
+        listOf("Calm", "Gentle", "Careful", "Quirky", "Sassy"), // plus spd
+        listOf("Timid", "Hasty", "Jolly", "Naive", "Serious"), // plus spe
+    )
+
+    // Same split as roleOf. EVs stay after evolving, so a Pokémon that still evolves is planned as its strongest final form
+    // (except in Little Cup, where it stays as it is).
+    fun buildOf(p: Mon): EvBuild {
+        val t = if (isFinal(p) || s.mode.level == "lc") p else finalForms(p).maxByOrNull { it.bst } ?: p
+        val b = t.stats
+        // Huge Power and Pure Power double Attack, so those Pokémon are built physical whatever their base stats say
+        val power = t.abilities.any { it.trimStart('*') == "Huge Power" || it.trimStart('*') == "Pure Power" }
+        val style = if (power) 'P' else styleOf(t)
+        val bulk = b[0] + b[2] + b[4]
+        val offense = max(if (power) b[1] * 2 else b[1], b[3])
+        val spe = b[5]
+        val off = if (style == 'P') 1 else if (style == 'S') 3 else if (b[1] >= b[3]) 1 else 3
+        val unused = if (off == 1) 3 else 1
+        val weak = if (b[2] <= b[4]) 2 else 4
+        val strong = if (weak == 2) 4 else 2
+        val drop = if (style == 'M') strong else unused // mixed attackers keep both attack stats
+        val evs = IntArray(6)
+        fun put(a: Int, c: Int, d: Int) { evs[a] = 252; evs[c] = 252; evs[d] = 4 }
+        val (plus, minus) = when {
+            spe >= 95 && offense >= 95 -> { put(off, 5, 0); 5 to drop }
+            bulk >= 270 && offense < 95 -> { put(0, weak, strong); weak to if (style == 'P') 3 else 1 }
+            bulk >= 260 -> { put(0, off, weak); off to drop }
+            spe < 60 && offense >= 95 -> { put(0, off, weak); off to 5 }
+            offense >= 85 -> { put(off, 5, 0); off to drop }
+            else -> { put(0, 5, weak); 5 to unused }
+        }
+        return EvBuild(natureNames[plus - 1][minus - 1], plus, minus, evs, t)
+    }
+
+    fun evText(b: EvBuild) = (0 until 6).filter { b.evs[it] > 0 }
+        .sortedWith(compareByDescending<Int> { b.evs[it] }.thenBy { it })
+        .joinToString(" · ") { "${b.evs[it]} ${statShort[it]}" }
+
+    fun natureText(b: EvBuild) = "${b.nature} (+${statShort[b.plus]}, −${statShort[b.minus]})"
 
     // ---------- battle mode ----------
     val isMulti get() = s.mode.format != "singles"

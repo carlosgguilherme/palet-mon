@@ -68,7 +68,7 @@ public sealed partial class MainView
         foreach (var m in x.Moves) movesGrid.Children.Add(MoveCard(m));
         Control moves = x.Moves.Count > 0 ? movesGrid : Muted("Sem golpes de dano disponíveis ainda.");
 
-        var card = Card(Col(12, head, StatBars(x.P), roleRow, Muted(role.Tip, 12.5), EvoBlock(x.P, x.Lv), Col(6, Label(moveLabel), moves)), 14);
+        var card = Card(Col(12, head, StatBars(x.P), roleRow, Muted(role.Tip, 12.5), EvBlock(x.P), EvoBlock(x.P, x.Lv), Col(6, Label(moveLabel), moves)), 14);
         card.Width = 380;
         return card;
     }
@@ -88,6 +88,16 @@ public sealed partial class MainView
             return b;
         }
         return Row(4, Step("−", -1), box, Step("+", 1));
+    }
+
+    // suggested EVs and nature for the role; planned on the final form when it still evolves
+    internal static Control EvBlock(Mon p)
+    {
+        var b = Engine.BuildOf(p);
+        var col = Col(3, Rich($"EVs: **{Engine.EvText(b)}**", 12.5), Rich($"Natureza: **{Engine.NatureText(b)}**", 12.5));
+        if (b.Target.Id != p.Id) col.Children.Add(Muted($"Pensando em {b.Target.Name}: os EVs continuam depois de evoluir.", 12));
+        col.Children.Add(Muted("EVs vêm das batalhas e das vitaminas. A natureza dá para trocar com Mints.", 12));
+        return new Border { Padding = new Thickness(10, 8), CornerRadius = new CornerRadius(8), Child = col }.Res(Border.BackgroundProperty, "AccentSoft");
     }
 
     internal static Control EvoBlock(Mon p, int lv)

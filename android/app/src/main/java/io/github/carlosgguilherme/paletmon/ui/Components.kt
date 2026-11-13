@@ -385,6 +385,30 @@ fun MoveCard(mv: PMove, modifier: Modifier = Modifier) {
     }
 }
 
+// Suggested EVs and nature for the role; planned on the final form when it still evolves.
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun EvBox(mon: Mon) {
+    val b = Engine.buildOf(mon)
+    val order = (0 until 6).filter { b.evs[it] > 0 }.sortedWith(compareByDescending<Int> { b.evs[it] }.thenBy { it })
+    Column(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(pm.accentSoft).padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Label("EVs e natureza")
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            for (i in order) {
+                Box(Modifier.clip(RoundedCornerShape(99.dp)).background(pm.panel).padding(horizontal = 10.dp, vertical = 3.dp)) {
+                    Txt("${b.evs[i]} ${Engine.statShort[i]}", 13f, FontWeight.ExtraBold, pm.accentInk)
+                }
+            }
+        }
+        Rich("Natureza: **${Engine.natureText(b)}**", 13.5f)
+        if (b.target.id != mon.id) Muted("Pensando em ${b.target.name}: os EVs continuam depois de evoluir.", 12.5f)
+        Muted("EVs vêm das batalhas e das vitaminas. A natureza dá para trocar com Mints.", 12f)
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EvoBlock(mon: Mon, lv: Int) {

@@ -147,6 +147,8 @@ public sealed partial class MainView : UserControl
                 Chips(z.P.Types),
                 Rich($"Habilidade: **{z.Ab}**", 12.5),
                 Muted($"{Engine.RoleOf(z.P).Name} · BST {z.P.Bst}", 12.5));
+            var ev = Engine.BuildOf(z.P);
+            col.Children.Add(Rich($"EVs: **{Engine.EvText(ev)}** · {ev.Nature}", 12));
             if (showReasons && !z.Core && cores.Count > 0) col.Children.Add(Text(Engine.SupportReason(z, cores), 12.5));
             col.Children.Add(Muted(string.Join(" · ", mv.Select(m => m.Name)), 12));
             var card = Card(col, 10, "Panel");
