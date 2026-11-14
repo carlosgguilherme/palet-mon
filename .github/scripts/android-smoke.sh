@@ -143,6 +143,14 @@ wait_text "Time gerado" 40 || fail "gerador não terminou"
 shot 10-gerado
 swipe_up
 shot 10b-gerado-rolado
+scroll_to "Só da versão do jogo"
+tap_text "Só da versão do jogo"
+wait_text "Platinum" || fail "a escolha da versão não apareceu"
+shot 10c-filtro-versao
+for _ in 1 2 3 4 5 6 7 8; do swipe_down; done
+tap_text "Gerar outro"
+wait_text "Time gerado" 40 || fail "o gerador com versão do jogo não terminou"
+shot 10d-gerado-platinum
 
 echo "--- Batalha"
 tap_text "Batalha"

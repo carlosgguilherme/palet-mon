@@ -49,7 +49,7 @@ static class Golden
         var f = Engine.FeatOf(p);
         Add("mon", p.Id, p.Name, p.Bst, role.Name, role.Tip, Engine.StyleOf(p), Engine.DefaultAbility(p), J(Engine.AbilityNames(p)),
             Ids(Engine.NextEvos(p)), Ids(Engine.FinalForms(p)), Engine.EvoText(p.Evo), B(Engine.IsFinal(p)), B(Engine.IsBasic(p)),
-            f.Spread, B(f.Fake), B(f.Redirect), B(f.Speed), B(f.Eq));
+            f.Spread, B(f.Fake), B(f.Redirect), B(f.Speed), B(f.Eq), J(p.Games));
         Ev("ev", p);
     }
 
@@ -144,6 +144,12 @@ static class Golden
             var c = BoxConfig.With("gen");
             c.GenNum = gen;
             list.Add(("gen-" + gen, c));
+        }
+        foreach (var game in Engine.Games.Keys)
+        {
+            var c = BoxConfig.With("game", "synergy");
+            c.GameKey = game;
+            list.Add(("game-" + game, c));
         }
         return list;
     }

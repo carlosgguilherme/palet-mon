@@ -38,6 +38,7 @@ public sealed class BoxConfig
     public string WeatherKind { get; set; } = "rain";
     public string MonoType { get; set; } = "water";
     public int GenNum { get; set; } = 9;
+    public string GameKey { get; set; } = "pt";
 
     public bool this[string key]
     {

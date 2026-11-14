@@ -142,13 +142,19 @@ public static class Engine
         new("weather", "Time de clima", "Um Pokémon que liga o clima e outros que se beneficiam dele.", "weatherKind"),
         new("mono", "Monotipo", "Todos os Pokémon compartilham um tipo.", "monoType"),
         new("gen", "Uma geração", "Só Pokémon de uma geração.", "genNum"),
+        new("game", "Só da versão do jogo", "Só Pokémon que dá para pegar antes da Elite 4 nessa versão, contando evoluções que não precisam de troca.", "gameKey"),
         new("noDupTypes", "Sem tipos repetidos", "Nenhum tipo aparece duas vezes."),
         new("keepTeam", "Manter meu time atual", "Os Pokémon do seu time ficam e o gerador completa o resto."),
         new("wishPrio", "Priorizar minha lista", "Dá preferência aos Pokémon da aba Montar time."),
         new("wishOnly", "Só da minha lista", "Usa apenas os Pokémon da sua lista (nas formas finais)."),
         new("legends", "Permitir lendários", "Inclui lendários e míticos."),
     };
-    public static readonly string[] BuildKeys = { "synergy", "competitive", "balanced", "random", "fast", "trickroom", "weather", "mono", "gen", "noDupTypes", "legends" };
+    public static readonly string[] BuildKeys = { "synergy", "competitive", "balanced", "random", "fast", "trickroom", "weather", "mono", "gen", "game", "noDupTypes", "legends" };
+    public static readonly Dictionary<string, string> Games = new()
+    {
+        ["pt"] = "Platinum", ["hgss"] = "HeartGold / SoulSilver", ["bw"] = "Black / White", ["b2w2"] = "Black 2 / White 2",
+        ["xy"] = "X / Y", ["usum"] = "Ultra Sun / Ultra Moon",
+    };
 
     // ---------- evolution ----------
     static readonly Dictionary<int, List<Mon>> evoCache = new();
@@ -567,6 +573,7 @@ public static class Engine
             if (lc && !IsBasic(p)) return false;
             if (cfg["mono"] && !p.Types.Contains(cfg.MonoType)) return false;
             if (cfg["gen"] && p.Gen != cfg.GenNum) return false;
+            if (cfg["game"] && !p.Games.Contains(cfg.GameKey)) return false;
             if (cfg["competitive"] && !cfg["wishOnly"] && !lc && p.Bst < 440) return false;
             return true;
         }).ToList();

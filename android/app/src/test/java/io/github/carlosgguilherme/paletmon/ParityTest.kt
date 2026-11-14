@@ -36,7 +36,7 @@ class ParityTest {
         add(
             "mon", p.id, p.name, p.bst, role.name, role.tip, Engine.styleOf(p), Engine.defaultAbility(p), j(Engine.abilityNames(p)),
             ids(Engine.nextEvos(p)), ids(Engine.finalForms(p)), Engine.evoText(p.evo), b(Engine.isFinal(p)), b(Engine.isBasic(p)),
-            f.spread, b(f.fake), b(f.redirect), b(f.speed), b(f.eq),
+            f.spread, b(f.fake), b(f.redirect), b(f.speed), b(f.eq), j(p.games),
         )
         ev("ev", p)
     }
@@ -112,6 +112,7 @@ class ParityTest {
         for (w in listOf("rain", "sun", "sand", "snow")) list.add("weather-$w" to BoxConfig.of("weather").copy(weatherKind = w))
         for (t in listOf("water", "dragon", "steel")) list.add("mono-$t" to BoxConfig.of("mono", "synergy").copy(monoType = t))
         for (g in listOf(1, 4, 9)) list.add("gen-$g" to BoxConfig.of("gen").copy(genNum = g))
+        for (game in Engine.games.keys) list.add("game-$game" to BoxConfig.of("game", "synergy").copy(gameKey = game))
         return list
     }
 

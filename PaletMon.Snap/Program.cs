@@ -39,4 +39,5 @@ Shot("h2-meu-time-escuro", null, ThemeVariant.Dark);
 Shot("h3-batalha-vgc", () => { Engine.ApplyPreset("vgc"); Engine.S.Opp.Mode = "mon"; Engine.S.Opp.Mon = "Gyarados"; Engine.S.Tab = "batalha"; });
 Shot("h4-gerador", () => { Engine.ApplyPreset("livre"); Engine.S.Tab = "gerador"; });
 Shot("h5-sobre", () => Engine.S.Tab = "sobre");
+Shot("h6-gerador-versao", () => { Engine.S.Tab = "gerador"; Engine.S.Gen["game"] = true; Engine.S.Gen.GameKey = "hgss"; });
 Console.WriteLine("ok");

@@ -255,7 +255,7 @@ public sealed partial class MainView
         var col = Col(16, step1, step2);
         if (lastBuild != null)
         {
-            if (lastBuild.Count == 0) col.Children.Add(Card(Text("Nenhum Pokémon atende às caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração ou Sem tipos repetidos).")));
+            if (lastBuild.Count == 0) col.Children.Add(Card(Text("Nenhum Pokémon atende às caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração, Só da versão do jogo ou Sem tipos repetidos).")));
             for (int i = 0; i < lastBuild.Count; i++)
             {
                 var r = lastBuild[i];
@@ -281,7 +281,7 @@ public sealed partial class MainView
             PanelHead(H2("Gerador de time"), Muted("Marque as caixas com o que você quer e gere. Dá para combinar várias.")),
             BoxGrid(S.Gen, Engine.Boxes.Select(b => b.Key), () => { genShown.Clear(); Save(); Render(); }),
             Row(10, go, Muted(S.Tms ? "Os golpes mostrados consideram todo o learnset, incluindo TMs, tutores e ovo." : "Os golpes mostrados consideram todo o learnset.").With(t => t.VerticalAlignment = VerticalAlignment.Center)))));
-        if (genEmpty) col.Children.Add(Card(Text("Nenhum Pokémon atende a todas as caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração ou Só da minha lista).")));
+        if (genEmpty) col.Children.Add(Card(Text("Nenhum Pokémon atende a todas as caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração, Só da versão do jogo ou Só da minha lista).")));
         else if (genResult != null)
         {
             Button again = null, wish = null;

@@ -25,6 +25,7 @@ public sealed class Mon
     public bool Legendary;
     public bool Mythical;
     public bool Regional;
+    public string[] Games = Array.Empty<string>(); // game versions where it can be caught before the Elite Four
     public Evo Evo;
     public int[] LevelMoves = Array.Empty<int>(); // pairs: move id, level
     public int[] OtherMoves = Array.Empty<int>(); // TM, tutor, egg
@@ -93,6 +94,7 @@ public static class Dex
                 Legendary = p.TryGetProperty("L", out _),
                 Mythical = p.TryGetProperty("M", out _),
                 Regional = p.TryGetProperty("r", out _),
+                Games = p.TryGetProperty("v", out var v) ? v.EnumerateArray().Select(x => x.GetString()).ToArray() : Array.Empty<string>(),
             };
             if (p.TryGetProperty("e", out var e))
             {

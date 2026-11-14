@@ -124,6 +124,7 @@ public sealed partial class MainView : UserControl
             var inner = Col(8, cb);
             if (box.Extra == "weatherKind") inner.Children.Add(Combo(Engine.Weathers.Select(w => (w.Key, w.Value.Label)), cfg.WeatherKind, k => { cfg.WeatherKind = k; cfg["weather"] = true; changed(); }, 160).With(c => c.Margin = new Thickness(28, 0, 0, 0)));
             if (box.Extra == "monoType") inner.Children.Add(Combo(TypeChart.All.Select(t => (t, TypeChart.Pt[t])), cfg.MonoType, k => { cfg.MonoType = k; cfg["mono"] = true; changed(); }, 160).With(c => c.Margin = new Thickness(28, 0, 0, 0)));
+            if (box.Extra == "gameKey") inner.Children.Add(Combo(Engine.Games.Select(g => (g.Key, g.Value)), cfg.GameKey, k => { cfg.GameKey = k; cfg["game"] = true; changed(); }, 200).With(c => c.Margin = new Thickness(28, 0, 0, 0)));
             if (box.Extra == "genNum") inner.Children.Add(Combo(Enumerable.Range(1, 9).Select(n => (n.ToString(), $"Geração {n}")), cfg.GenNum.ToString(), k => { cfg.GenNum = int.Parse(k); cfg["gen"] = true; changed(); }, 160).With(c => c.Margin = new Thickness(28, 0, 0, 0)));
             var tile = new Border { Width = 262, Padding = new Thickness(12), CornerRadius = new CornerRadius(10), BorderThickness = new Thickness(cfg[box.Key] ? 2 : 1), Child = inner }
                 .Res(Border.BackgroundProperty, cfg[box.Key] ? "AccentSoft" : "Bg").Res(Border.BorderBrushProperty, cfg[box.Key] ? "Accent" : "Line");

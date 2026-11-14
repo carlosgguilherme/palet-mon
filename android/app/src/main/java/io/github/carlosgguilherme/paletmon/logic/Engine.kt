@@ -140,13 +140,18 @@ object Engine {
         BoxDef("weather", "Time de clima", "Um Pokémon que liga o clima e outros que se beneficiam dele.", "weatherKind"),
         BoxDef("mono", "Monotipo", "Todos os Pokémon compartilham um tipo.", "monoType"),
         BoxDef("gen", "Uma geração", "Só Pokémon de uma geração.", "genNum"),
+        BoxDef("game", "Só da versão do jogo", "Só Pokémon que dá para pegar antes da Elite 4 nessa versão, contando evoluções que não precisam de troca.", "gameKey"),
         BoxDef("noDupTypes", "Sem tipos repetidos", "Nenhum tipo aparece duas vezes."),
         BoxDef("keepTeam", "Manter meu time atual", "Os Pokémon do seu time ficam e o gerador completa o resto."),
         BoxDef("wishPrio", "Priorizar minha lista", "Dá preferência aos Pokémon da aba Montar."),
         BoxDef("wishOnly", "Só da minha lista", "Usa apenas os Pokémon da sua lista (nas formas finais)."),
         BoxDef("legends", "Permitir lendários", "Inclui lendários e míticos."),
     )
-    val buildKeys = listOf("synergy", "competitive", "balanced", "random", "fast", "trickroom", "weather", "mono", "gen", "noDupTypes", "legends")
+    val buildKeys = listOf("synergy", "competitive", "balanced", "random", "fast", "trickroom", "weather", "mono", "gen", "game", "noDupTypes", "legends")
+    val games = linkedMapOf(
+        "pt" to "Platinum", "hgss" to "HeartGold / SoulSilver", "bw" to "Black / White", "b2w2" to "Black 2 / White 2",
+        "xy" to "X / Y", "usum" to "Ultra Sun / Ultra Moon",
+    )
 
     // ---------- evolution ----------
     private val evoCache = ConcurrentHashMap<Int, List<Mon>>()
@@ -558,6 +563,7 @@ object Engine {
                 lc && !isBasic(p) -> false
                 cfg["mono"] && cfg.monoType !in p.types -> false
                 cfg["gen"] && p.gen != cfg.genNum -> false
+                cfg["game"] && cfg.gameKey !in p.games -> false
                 cfg["competitive"] && !cfg["wishOnly"] && !lc && p.bst < 440 -> false
                 else -> true
             }

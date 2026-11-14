@@ -50,6 +50,7 @@ dotnet run --project PaletMon
 - `PaletMon`: app de PC, com instalador e atualização pelo Velopack.
 - `android`: app nativo de Android, em Kotlin com Jetpack Compose, compilado pelo GitHub Actions. Usa o mesmo `dex.json` e tem o mesmo motor do PC: o teste `ParityTest` compara os dois.
 - `PaletMon.Snap`: tira fotos das telas sem abrir janela. Com `--golden <arquivo>`, gera os resultados do motor usados pelo `ParityTest`.
+- `tools/jogos.mjs`: marca no `dex.json` quais Pokémon dá para pegar antes da Elite 4 em cada versão, a partir dos encontros da PokéAPI. Os locais do pós-jogo de cada versão estão listados no próprio arquivo.
 
 ### Lançar uma versão nova
 

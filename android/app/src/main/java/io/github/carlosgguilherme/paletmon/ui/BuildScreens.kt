@@ -55,6 +55,9 @@ private fun BoxList(cfg: BoxConfig, keys: List<String>, ui: UiState, changed: (B
                 "monoType" -> SelectRow("Tipo", TypeChart.pt.getValue(cfg.monoType)) {
                     ui.sheet = PickSheet("Tipo", TypeChart.all.map { it to TypeChart.pt.getValue(it) }, cfg.monoType) { k -> changed(cfg.copy(monoType = k)) }
                 }
+                "gameKey" -> SelectRow("Versão", Engine.games.getValue(cfg.gameKey)) {
+                    ui.sheet = PickSheet("Versão do jogo", Engine.games.map { it.key to it.value }, cfg.gameKey) { k -> changed(cfg.copy(gameKey = k)) }
+                }
                 "genNum" -> SelectRow("Geração", "Geração ${cfg.genNum}") {
                     ui.sheet = PickSheet("Geração", (1..9).map { "$it" to "Geração $it" }, "${cfg.genNum}") { k -> changed(cfg.copy(genNum = k.toInt())) }
                 }
@@ -192,7 +195,7 @@ fun BuildScreen(model: AppModel, ui: UiState) {
         }
         if (results != null) {
             if (results.isEmpty()) {
-                item { AlertBox(Alert("warn", "Nenhum Pokémon atende às caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração ou Sem tipos repetidos).")) }
+                item { AlertBox(Alert("warn", "Nenhum Pokémon atende às caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração, Só da versão do jogo ou Sem tipos repetidos).")) }
             }
             itemsIndexed(results) { i, r ->
                 ResultCard(if (i == 0) "Opção 1 · melhor encaixe" else "Opção ${i + 1}", r, i == 0, st.build, st.tms, reasons = true) {
@@ -224,7 +227,7 @@ fun GeneratorScreen(model: AppModel, ui: UiState) {
             BigButton(label, enabled = !model.generating) { model.generate() }
         }
         if (model.genEmpty) {
-            item { AlertBox(Alert("warn", "Nenhum Pokémon atende a todas as caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração ou Só da minha lista).")) }
+            item { AlertBox(Alert("warn", "Nenhum Pokémon atende a todas as caixas marcadas. Desmarque algum filtro (Monotipo, Uma geração, Só da versão do jogo ou Só da minha lista).")) }
         } else if (r != null) {
             item {
                 ResultCard("Time gerado · ${r.poolSize} possíveis", r, true, st.gen, st.tms, reasons = false) {

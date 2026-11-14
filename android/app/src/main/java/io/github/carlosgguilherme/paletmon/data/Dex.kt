@@ -23,6 +23,7 @@ class Mon(
     val legendary: Boolean,
     val mythical: Boolean,
     val regional: Boolean,
+    val games: List<String>, // game versions where it can be caught before the Elite Four
     val evo: Evo?,
     val levelMoves: IntArray, // pairs: move id, level
     val otherMoves: IntArray, // TM, tutor, egg
@@ -88,6 +89,7 @@ object Dex {
                 legendary = "L" in p,
                 mythical = "M" in p,
                 regional = "r" in p,
+                games = p["v"]?.jsonArray?.map { it.jsonPrimitive.content } ?: emptyList(),
                 evo = evo,
                 levelMoves = learn?.getValue("l")?.jsonArray?.ints() ?: IntArray(0),
                 otherMoves = learn?.getValue("o")?.jsonArray?.ints() ?: IntArray(0),

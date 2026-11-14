@@ -41,6 +41,7 @@ data class BoxConfig(
     @SerialName("WeatherKind") val weatherKind: String = "rain",
     @SerialName("MonoType") val monoType: String = "water",
     @SerialName("GenNum") val genNum: Int = 9,
+    @SerialName("GameKey") val gameKey: String = "pt",
 ) {
     operator fun get(key: String) = flags[key] == true
     fun with(key: String, value: Boolean) = copy(flags = flags + (key to value))
